@@ -95,10 +95,10 @@ class HashTable:
         # get index from hashmod
         index = self._hash_mod(key)
 
-        # check if a pair exists at that index with matching keys
-        if self.storage[index] is not None and self.storage[index].key == key:
-            # if so, return the value
-            return self.storage[index].value
+        # check if a pair exists at that index
+        if self.storage[index] is not None:
+            # if so, return it
+            return self.storage[index]
             # else return none
         else:
             return None
