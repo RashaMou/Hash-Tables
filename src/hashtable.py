@@ -76,8 +76,8 @@ class HashTable:
         # get index from hashmod
         index = self._hash_mod(key)
 
-        # check if a pair exists in thebucket with matching keys
-        if self.storage[index] is not None and self.storage[index].key == key:
+        # check if a pair exists at the index:
+        if self.storage[index] is not None:
             # if so, remove that pair
             self.storage[index] = None
             # else print warning
