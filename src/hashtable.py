@@ -57,16 +57,13 @@ class HashTable:
         """
         # hashmod they key to find the index that we're going to store the key/value pair in.
         index = self._hash_mod(key)
-        # check if a pair already exists in the bucket
-        pair = self.storage[index]
-        if pair is not None:
-            # if so, overwrite the key/value and throw a warning
-            print("Warning: overwriting value")
-            pair.key = key
-            pair.value = value
-        # if not, create a new linkedpair and place it in the bucket
+        # check if something already exists at that index:
+        if self.storage[index] is not None:
+            # if so, throw an error
+            print("Error: key in use")
+        # if not, then insert it
         else:
-            self.storage[index] = LinkedPair(key, value)
+            self.storage[index] = value
 
     def remove(self, key):
         """
@@ -98,7 +95,7 @@ class HashTable:
         # get index from hashmod
         index = self._hash_mod(key)
 
-        # check if a pair exists in the bucket with matching keys
+        # check if a pair exists at that index with matching keys
         if self.storage[index] is not None and self.storage[index].key == key:
             # if so, return the value
             return self.storage[index].value
@@ -113,7 +110,8 @@ class HashTable:
 
         Fill this in.
         """
-        pass
+        self.capacity *= 2
+        new_storage = [None] * self.capacity
 
 
 if __name__ == "__main__":
@@ -130,16 +128,16 @@ if __name__ == "__main__":
     print(ht.retrieve("line_2"))
     print(ht.retrieve("line_3"))
 
-    # # Test resizing
-    # old_capacity = len(ht.storage)
-    # ht.resize()
-    # new_capacity = len(ht.storage)
+    # Test resizing
+    old_capacity = len(ht.storage)
+    ht.resize()
+    new_capacity = len(ht.storage)
 
-    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
-    # # Test if data intact after resizing
-    # print(ht.retrieve("line_1"))
-    # print(ht.retrieve("line_2"))
-    # print(ht.retrieve("line_3"))
+    # Test if data intact after resizing
+    print(ht.retrieve("line_1"))
+    print(ht.retrieve("line_2"))
+    print(ht.retrieve("line_3"))
 
-    # print("")
+    print("")
