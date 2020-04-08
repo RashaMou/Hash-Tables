@@ -47,23 +47,31 @@ class HashTable:
     def insert(self, key, value):
         """
         Store the value with the given key.
-
-        # Part 1: Hash collisions should be handled with an error warning. (Think about and
-        # investigate the impact this will have on the tests)
-
-        # Part 2: Change this so that hash collisions are handled with Linked List Chaining.
-
-        Fill this in.
         """
         # hashmod they key to find the index that we're going to store the key/value pair in.
         index = self._hash_mod(key)
         # check if something already exists at that index:
         if self.storage[index] is not None:
-            # if so, throw an error
-            print("Error: key in use")
+            # if it does exist, then turn it into starting point for linked list
+            node = self.storage[index]
+            # traverse linked list. Here we have three possibilities:
+            # if key of next node == key, then we overwrite the value
+            # if key of next node != key, then we move on
+            # if key of next node == None, then we insert
+
+            while node is not None:
+                if node.key == key:
+                    node.value = value
+                    return
+                elif node.next is not None:
+                    node = node.next
+                else:
+                    node.next = LinkedPair(key, value)
+                    return
+
         # if not, then insert it
         else:
-            self.storage[index] = value
+            self.storage[index] = LinkedPair(key, value)
 
     def remove(self, key):
         """
@@ -78,9 +86,17 @@ class HashTable:
 
         # check if a pair exists at the index:
         if self.storage[index] is not None:
-            # if so, remove that pair
-            self.storage[index] = None
-            # else print warning
+            # if keys match, remove
+            if self.storage[index].key == key:
+                self.storage[index] = None
+            # if they don't match, traverse list to see if any other node keys match it
+            else:
+                node = self.storage[index]
+                while node.next is not None:
+                    if node.next.key == key:
+                        node.next = None
+                    else:
+                        node = node.next
         else:
             print("Key does not exist")
 
@@ -97,9 +113,12 @@ class HashTable:
 
         # check if a pair exists at that index
         if self.storage[index] is not None:
-            # if so, return it
-            return self.storage[index]
-            # else return none
+            node = self.storage[index]
+            while node is not None:
+                if node.key == key:
+                    return node.value
+                else:
+                    node = node.next
         else:
             return None
 
@@ -110,8 +129,14 @@ class HashTable:
 
         Fill this in.
         """
+        old_storage = self.storage
         self.capacity *= 2
-        new_storage = [None] * self.capacity
+        self.storage = [None] * self.capacity
+
+        for item in old_storage:
+            while item:
+                self.insert(item.key, item.value)
+                item = item.next
 
 
 if __name__ == "__main__":
